@@ -124,4 +124,21 @@ public class LexerTest {
     }
   }
 
+  public void isCaseInsensitive() {
+    List<TestCase> testCases = Arrays.asList(
+        new TestCase("define",
+            Arrays.asList(new Token(TokenType.Define, new SourceSpan(1, 1)), new Token(TokenType.Eof))),
+        new TestCase("Define",
+            Arrays.asList(new Token(TokenType.Define, new SourceSpan(1, 1)), new Token(TokenType.Eof))),
+        new TestCase("DeFiNe",
+            Arrays.asList(new Token(TokenType.Define, new SourceSpan(1, 1)), new Token(TokenType.Eof))),
+        new TestCase("DEFINE",
+            Arrays.asList(new Token(TokenType.Define, new SourceSpan(1, 1)), new Token(TokenType.Eof))));
+
+    for (TestCase testCase : testCases) {
+      List<Token> actual = new Lexer(testCase.input).lex();
+
+      assertTrue(actual.equals(testCase.expected));
+    }
+  }
 }
