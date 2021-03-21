@@ -20,7 +20,7 @@ class TestCase {
 public class LexerTest {
   @Test
   public void recognizesSimpleTokens() {
-    List<TestCase> testCases = Arrays.asList(
+    List<TestCase> testCases = Arrays.asList(new TestCase("", Arrays.asList(new Token(TokenType.Eof))),
         new TestCase("{",
             Arrays.asList(new Token(TokenType.LeftBrace, new SourceSpan(1, 1)), new Token(TokenType.Eof))),
         new TestCase("}",
@@ -68,6 +68,7 @@ public class LexerTest {
     List<TestCase> testCases = Arrays.asList(
         new TestCase("program",
             Arrays.asList(new Token(TokenType.Program, new SourceSpan(1, 1)), new Token(TokenType.Eof))),
+
         new TestCase("define",
             Arrays.asList(new Token(TokenType.Define, new SourceSpan(1, 1)), new Token(TokenType.Eof))),
         new TestCase("not", Arrays.asList(new Token(TokenType.Not, new SourceSpan(1, 1)), new Token(TokenType.Eof))),
@@ -100,4 +101,27 @@ public class LexerTest {
       assertTrue(actual.equals(testCase.expected));
     }
   }
+
+  @Test
+  public void keepsTrackOfLinesAndColumns() {
+    List<TestCase> testCases = Arrays.asList(
+        new TestCase("{}",
+            Arrays.asList(new Token(TokenType.LeftBrace, new SourceSpan(1, 1)),
+                new Token(TokenType.RightBrace, new SourceSpan(1, 2)), new Token(TokenType.Eof))),
+        new TestCase("{\n>",
+            Arrays.asList(new Token(TokenType.LeftBrace, new SourceSpan(1, 1)),
+                new Token(TokenType.GreaterThan, new SourceSpan(2, 1)), new Token(TokenType.Eof))),
+        new TestCase(" +", Arrays.asList(new Token(TokenType.Plus, new SourceSpan(1, 2)), new Token(TokenType.Eof))),
+        new TestCase("\n\n\n +",
+            Arrays.asList(new Token(TokenType.Plus, new SourceSpan(4, 2)), new Token(TokenType.Eof))),
+        new TestCase("\ntrue\n\n   +", Arrays.asList(new Token(TokenType.True, new SourceSpan(2, 1)),
+            new Token(TokenType.Plus, new SourceSpan(4, 4)), new Token(TokenType.Eof))));
+
+    for (TestCase testCase : testCases) {
+      List<Token> actual = new Lexer(testCase.input).lex();
+
+      assertTrue(actual.equals(testCase.expected));
+    }
+  }
+
 }

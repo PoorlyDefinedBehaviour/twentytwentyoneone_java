@@ -14,8 +14,8 @@ public class Lexer {
     this.sourceCode = sourceCode;
     this.position = 0;
     this.line = 1;
-    this.column = 1;
-    this.currentCharacter = '\0';
+    this.column = 0;
+    this.currentCharacter = sourceCode.isEmpty() ? '\0' : sourceCode.charAt(0);
   }
 
   private boolean hasCharactersToLex() {
@@ -24,7 +24,7 @@ public class Lexer {
 
   private void readCharacter() {
     if (!hasCharactersToLex()) {
-      currentCharacter = '\0';
+
       return;
     }
 
@@ -41,18 +41,20 @@ public class Lexer {
   }
 
   private void skipWhitespace() {
-    while (currentCharacter == '\n' || currentCharacter == ' ' || currentCharacter == '\r'
-        || currentCharacter == '\t') {
+    char nextCharacter = peek();
+
+    while (nextCharacter == '\n' || nextCharacter == ' ' || nextCharacter == '\r' || nextCharacter == '\t') {
       readCharacter();
+      nextCharacter = peek();
     }
   }
 
   private char peek() {
-    if (position + 1 >= sourceCode.length()) {
+    if (!hasCharactersToLex()) {
       return '\0';
     }
 
-    return sourceCode.charAt(position + 1);
+    return sourceCode.charAt(position);
   }
 
   private boolean isAlpha(char character) {
@@ -68,13 +70,13 @@ public class Lexer {
   }
 
   private String readIdentifierOrKeyword() {
-    int start = position;
+    int start = position - 1;
 
-    while (isDigit(currentCharacter) || isAlphaOrSpecialCharacter(currentCharacter)) {
+    while (isDigit(peek()) || isAlphaOrSpecialCharacter(peek())) {
       readCharacter();
     }
 
-    String identifierOrKeyword = sourceCode.substring(start, position - start);
+    String identifierOrKeyword = sourceCode.substring(start, position);
 
     if (identifierOrKeyword.length() == 1) {
       return identifierOrKeyword;
@@ -173,15 +175,15 @@ public class Lexer {
       return Token.tokenFromIdentifierOrKeyword(readIdentifierOrKeyword(), new SourceSpan(line, tokenStartsAtColumn));
     }
 
-    return new Token(TokenType.RightBrace, new SourceSpan(line, tokenStartsAtColumn));
+    throw new RuntimeException(String.format("unexpected character %c", character));
   }
 
   private Token nextToken() {
     skipWhitespace();
 
-    Token token = tokenFromCharacter(currentCharacter);
-
     readCharacter();
+
+    Token token = tokenFromCharacter(currentCharacter);
 
     return token;
   }
@@ -189,12 +191,6 @@ public class Lexer {
   public List<Token> lex() {
     List<InvalidIdentifierError> errors = new ArrayList<>();
     List<Token> tokens = new ArrayList<>();
-
-    if (sourceCode.isEmpty()) {
-      return tokens;
-    }
-
-    currentCharacter = sourceCode.charAt(0);
 
     while (hasCharactersToLex()) {
       try {

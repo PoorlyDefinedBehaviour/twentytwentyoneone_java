@@ -33,43 +33,43 @@ public class Token {
   public static Token tokenFromIdentifierOrKeyword(String identifierOrKeyword, SourceSpan sourceSpan) {
     identifierOrKeyword = identifierOrKeyword.toLowerCase();
 
-    if (identifierOrKeyword == "program")
+    if (identifierOrKeyword.equals("program"))
       return new Token(TokenType.Program, sourceSpan);
-    if (identifierOrKeyword == "define")
+    if (identifierOrKeyword.equals("define"))
       return new Token(TokenType.Define, sourceSpan);
-    if (identifierOrKeyword == "not")
+    if (identifierOrKeyword.equals("not"))
       return new Token(TokenType.Not, sourceSpan);
-    if (identifierOrKeyword == "variable")
+    if (identifierOrKeyword.equals("variable"))
       return new Token(TokenType.Variable, sourceSpan);
-    if (identifierOrKeyword == "is")
+    if (identifierOrKeyword.equals("is"))
       return new Token(TokenType.Is, sourceSpan);
-    if (identifierOrKeyword == "natural")
+    if (identifierOrKeyword.equals("natural"))
       return new Token(TokenType.Natural, sourceSpan);
-    if (identifierOrKeyword == "real")
+    if (identifierOrKeyword.equals("real"))
       return new Token(TokenType.Real, sourceSpan);
-    if (identifierOrKeyword == "char")
+    if (identifierOrKeyword.equals("char"))
       return new Token(TokenType.Char, sourceSpan);
-    if (identifierOrKeyword == "boolean")
+    if (identifierOrKeyword.equals("boolean"))
       return new Token(TokenType.Boolean, sourceSpan);
-    if (identifierOrKeyword == "execute")
+    if (identifierOrKeyword.equals("execute"))
       return new Token(TokenType.Execute, sourceSpan);
-    if (identifierOrKeyword == "set")
+    if (identifierOrKeyword.equals("set"))
       return new Token(TokenType.Set, sourceSpan);
-    if (identifierOrKeyword == "get")
+    if (identifierOrKeyword.equals("get"))
       return new Token(TokenType.Get, sourceSpan);
-    if (identifierOrKeyword == "to")
+    if (identifierOrKeyword.equals("to"))
       return new Token(TokenType.To, sourceSpan);
-    if (identifierOrKeyword == "put")
+    if (identifierOrKeyword.equals("put"))
       return new Token(TokenType.Put, sourceSpan);
-    if (identifierOrKeyword == "loop")
+    if (identifierOrKeyword.equals("loop"))
       return new Token(TokenType.Loop, sourceSpan);
-    if (identifierOrKeyword == "while")
+    if (identifierOrKeyword.equals("while"))
       return new Token(TokenType.While, sourceSpan);
-    if (identifierOrKeyword == "do")
+    if (identifierOrKeyword.equals("do"))
       return new Token(TokenType.Do, sourceSpan);
-    if (identifierOrKeyword == "true")
+    if (identifierOrKeyword.equals("true"))
       return new Token(TokenType.True, sourceSpan);
-    if (identifierOrKeyword == "false")
+    if (identifierOrKeyword.equals("false"))
       return new Token(TokenType.False, sourceSpan);
 
     return new Token(TokenType.Identifier, sourceSpan);
