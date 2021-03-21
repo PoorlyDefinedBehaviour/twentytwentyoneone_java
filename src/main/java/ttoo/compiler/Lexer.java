@@ -47,10 +47,6 @@ public class Lexer {
     }
   }
 
-  private SourceSpan currentSourceSpan() {
-    return new SourceSpan(line, column);
-  }
-
   private char peek() {
     if (position + 1 >= sourceCode.length()) {
       return '\0';
@@ -59,82 +55,125 @@ public class Lexer {
     return sourceCode.charAt(position + 1);
   }
 
+  private boolean isAlpha(char character) {
+    return character >= 'a' && character <= 'z' || character >= 'A' && character <= 'Z';
+  }
+
+  private boolean isAlphaOrSpecialCharacter(char character) {
+    return isAlpha(character) || character == '_';
+  }
+
+  private boolean isDigit(char character) {
+    return character >= '0' && character <= '9';
+  }
+
+  private String readIdentifierOrKeyword() {
+    int start = position;
+
+    while (isDigit(currentCharacter) || isAlphaOrSpecialCharacter(currentCharacter)) {
+      readCharacter();
+    }
+
+    String identifier_or_keyword = sourceCode.substring(start, position - start);
+
+    if (identifier_or_keyword.length() == 1) {
+      return identifier_or_keyword;
+    }
+
+    for (int i = 0; i < identifier_or_keyword.length() - 1; i += 1) {
+      char character = identifier_or_keyword.charAt(i);
+      char nextCharacter = identifier_or_keyword.charAt(i + 1);
+
+      if ((isDigit(character) || isAlphaOrSpecialCharacter(character)) && !isAlpha(nextCharacter)) {
+        throw new InvalidIdentifierError(String.format("%s is not a valid identifier, %s must be followed by a letter",
+            identifier_or_keyword, character));
+      }
+    }
+
+    return identifier_or_keyword;
+  }
+
   private Token tokenFromCharacter(char character) {
+    final int tokenStartsAtColumn = column;
+
     if (character == '{') {
-      return new Token(TokenType.LeftBrace, currentSourceSpan());
+      return new Token(TokenType.LeftBrace, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '}') {
-      return new Token(TokenType.RightBrace, currentSourceSpan());
+      return new Token(TokenType.RightBrace, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '[') {
-      return new Token(TokenType.LeftBracket, currentSourceSpan());
+      return new Token(TokenType.LeftBracket, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == ']') {
-      return new Token(TokenType.RightBracket, currentSourceSpan());
+      return new Token(TokenType.RightBracket, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == ',') {
-      return new Token(TokenType.Comma, currentSourceSpan());
+      return new Token(TokenType.Comma, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '+') {
-      return new Token(TokenType.Plus, currentSourceSpan());
+      return new Token(TokenType.Plus, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '-') {
-      return new Token(TokenType.Minus, currentSourceSpan());
+      return new Token(TokenType.Minus, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '/') {
-      return new Token(TokenType.Slash, currentSourceSpan());
+      return new Token(TokenType.Slash, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '*') {
-      return new Token(TokenType.Star, currentSourceSpan());
+      return new Token(TokenType.Star, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '%') {
       if (peek() == '%') {
         readCharacter();
-        return new Token(TokenType.PercentPercent, currentSourceSpan());
+        return new Token(TokenType.PercentPercent, new SourceSpan(line, tokenStartsAtColumn));
       }
 
-      return new Token(TokenType.Percent, currentSourceSpan());
+      return new Token(TokenType.Percent, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '=') {
-      return new Token(TokenType.Equal, currentSourceSpan());
+      return new Token(TokenType.Equal, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '!') {
       if (peek() == '=') {
         readCharacter();
-        return new Token(TokenType.NotEqual, currentSourceSpan());
+        return new Token(TokenType.NotEqual, new SourceSpan(line, tokenStartsAtColumn));
       }
-      return new Token(TokenType.Bang, currentSourceSpan());
+      return new Token(TokenType.Bang, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '<') {
       if (peek() == '=') {
         readCharacter();
-        return new Token(TokenType.LessThanOrEqual, currentSourceSpan());
+        return new Token(TokenType.LessThanOrEqual, new SourceSpan(line, tokenStartsAtColumn));
       }
 
-      return new Token(TokenType.LessThan, currentSourceSpan());
+      return new Token(TokenType.LessThan, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '>') {
       if (peek() == '=') {
         readCharacter();
-        return new Token(TokenType.GreaterThanOrEqual, currentSourceSpan());
+        return new Token(TokenType.GreaterThanOrEqual, new SourceSpan(line, tokenStartsAtColumn));
       }
 
-      return new Token(TokenType.GreaterThan, currentSourceSpan());
+      return new Token(TokenType.GreaterThan, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '&') {
-      return new Token(TokenType.Ampersand, currentSourceSpan());
+      return new Token(TokenType.Ampersand, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '|') {
-      return new Token(TokenType.Pipe, currentSourceSpan());
+      return new Token(TokenType.Pipe, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == '(') {
-      return new Token(TokenType.LeftParen, currentSourceSpan());
+      return new Token(TokenType.LeftParen, new SourceSpan(line, tokenStartsAtColumn));
     }
     if (character == ')') {
-      return new Token(TokenType.RightParen, currentSourceSpan());
+      return new Token(TokenType.RightParen, new SourceSpan(line, tokenStartsAtColumn));
+    }
+    if (isAlphaOrSpecialCharacter(character)) {
+      return Token.tokenFromIdentifierOrKeyword(readIdentifierOrKeyword(), new SourceSpan(line, tokenStartsAtColumn));
     }
 
-    return new Token(TokenType.RightBrace, currentSourceSpan());
+    return new Token(TokenType.RightBrace, new SourceSpan(line, tokenStartsAtColumn));
   }
 
   private Token nextToken() {
@@ -148,6 +187,7 @@ public class Lexer {
   }
 
   public List<Token> lex() {
+    List<InvalidIdentifierError> errors = new ArrayList<>();
     List<Token> tokens = new ArrayList<>();
 
     if (sourceCode.isEmpty()) {
@@ -157,7 +197,11 @@ public class Lexer {
     currentCharacter = sourceCode.charAt(0);
 
     while (hasCharactersToLex()) {
-      tokens.add(nextToken());
+      try {
+        tokens.add(nextToken());
+      } catch (InvalidIdentifierError e) {
+        errors.add(e);
+      }
     }
 
     tokens.add(new Token(TokenType.Eof));
