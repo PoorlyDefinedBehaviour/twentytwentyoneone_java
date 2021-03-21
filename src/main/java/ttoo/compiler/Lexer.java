@@ -84,7 +84,7 @@ public class Lexer {
       char character = identifierOrKeyword.charAt(i);
       char nextCharacter = identifierOrKeyword.charAt(i + 1);
 
-      if ((isDigit(character) || isAlphaOrSpecialCharacter(character)) && !isAlpha(nextCharacter)) {
+      if ((isDigit(character) || character == '_') && !isAlpha(nextCharacter)) {
         throw new InvalidIdentifierError(String.format("%s is not a valid identifier, %s must be followed by a letter",
             identifierOrKeyword, character));
       }
