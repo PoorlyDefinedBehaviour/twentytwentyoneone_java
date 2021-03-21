@@ -74,23 +74,23 @@ public class Lexer {
       readCharacter();
     }
 
-    String identifier_or_keyword = sourceCode.substring(start, position - start);
+    String identifierOrKeyword = sourceCode.substring(start, position - start);
 
-    if (identifier_or_keyword.length() == 1) {
-      return identifier_or_keyword;
+    if (identifierOrKeyword.length() == 1) {
+      return identifierOrKeyword;
     }
 
-    for (int i = 0; i < identifier_or_keyword.length() - 1; i += 1) {
-      char character = identifier_or_keyword.charAt(i);
-      char nextCharacter = identifier_or_keyword.charAt(i + 1);
+    for (int i = 0; i < identifierOrKeyword.length() - 1; i += 1) {
+      char character = identifierOrKeyword.charAt(i);
+      char nextCharacter = identifierOrKeyword.charAt(i + 1);
 
       if ((isDigit(character) || isAlphaOrSpecialCharacter(character)) && !isAlpha(nextCharacter)) {
         throw new InvalidIdentifierError(String.format("%s is not a valid identifier, %s must be followed by a letter",
-            identifier_or_keyword, character));
+            identifierOrKeyword, character));
       }
     }
 
-    return identifier_or_keyword;
+    return identifierOrKeyword;
   }
 
   private Token tokenFromCharacter(char character) {
