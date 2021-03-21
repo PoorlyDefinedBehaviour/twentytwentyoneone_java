@@ -134,10 +134,130 @@ public enum TokenType {
       return ")";
     }
   },
+  Program {
+    @Override
+    public String toString() {
+      return "program";
+    }
+  },
+  Define {
+    @Override
+    public String toString() {
+      return "define";
+    }
+  },
+  Not {
+    @Override
+    public String toString() {
+      return "not";
+    }
+  },
+  Variable {
+    @Override
+    public String toString() {
+      return "variable";
+    }
+  },
+  Is {
+    @Override
+    public String toString() {
+      return "is";
+    }
+  },
+  Natural {
+    @Override
+    public String toString() {
+      return "natural";
+    }
+  },
+  Real {
+    @Override
+    public String toString() {
+      return "real";
+    }
+  },
+  Char {
+    @Override
+    public String toString() {
+      return "char";
+    }
+  },
+  Boolean {
+    @Override
+    public String toString() {
+      return "boolean";
+    }
+  },
+  Execute {
+    @Override
+    public String toString() {
+      return "execute";
+    }
+  },
+  Set {
+    @Override
+    public String toString() {
+      return "set";
+    }
+  },
+  Get {
+    @Override
+    public String toString() {
+      return "get";
+    }
+  },
+  To {
+    @Override
+    public String toString() {
+      return "to";
+    }
+  },
+  Put {
+    @Override
+    public String toString() {
+      return "put";
+    }
+  },
+  Loop {
+    @Override
+    public String toString() {
+      return "loop";
+    }
+  },
+  While {
+    @Override
+    public String toString() {
+      return "while";
+    }
+  },
+  Do {
+    @Override
+    public String toString() {
+      return "do";
+    }
+  },
+  True {
+    @Override
+    public String toString() {
+      return "true";
+    }
+  },
+  False {
+    @Override
+    public String toString() {
+      return "false";
+    }
+  },
+  Identifier {
+    @Override
+    public String toString() {
+      return "identifier";
+    }
+  },
   Eof {
     @Override
     public String toString() {
       return "<EOF>";
     }
-  }
+  };
 }
